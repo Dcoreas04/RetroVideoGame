@@ -1,5 +1,5 @@
 public class GameService : IGameService
-{
+    {
     private readonly List<Game> _games = new List<Game>();
     public Game createGame(CreateGameDTO gameDTO)
     {

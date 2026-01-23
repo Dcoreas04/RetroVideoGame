@@ -1,0 +1,200 @@
+paths:
+  /games:
+    post:
+      summary: Add A New Game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        '201':
+          description: Game Created
+        '400':
+          description: Invalid Game
+
+  /games/{gameId}:
+    put:
+      summary: A Full Game Update
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        '200':
+          description: Game Fully Updated
+        '404':
+          description: Game not found
+
+    patch:
+      summary: A Partial Game Updated
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                condition:
+                  $ref: '#/components/schemas/Game/properties/condition'
+      responses:
+        '200':
+          description: Game Partially Updated
+        '404':
+          description: Game Not Found
+
+    delete:
+      summary: Delete A Game
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Game Deleted
+        '404':
+          description: Game Not Found
+
+  /users:
+    post:
+      summary: Create A New User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User Created
+        '400':
+          description: Invalid User
+
+  /users/{userId}:
+    put:
+      summary: A Full User Update
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User Fully Updated
+        '404':
+          description: User Not Found
+
+    patch:
+      summary: A Partial User Update
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/User/properties/name'
+                address:
+                  $ref: '#/components/schemas/User/properties/address'
+      responses:
+        '200':
+          description: User Partially Updated
+        '404':
+          description: User Not Found
+    delete:
+      summary: Delete A User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User Deleted
+        '404':
+          description: User Not Found
+
+
+
+components:
+  schemas:
+    Game:
+      type: object
+      required:
+        - title
+        - platform
+      properties:
+        id:
+          type: integer
+          example: 123
+        title:
+          type: string
+          example: "Halo Infinite"
+        publisher:
+          type: string
+          example: "Xbox Game Studios"
+        platform:
+          type: string
+          example: "Xbox Series X"
+        year:
+          type: integer
+          example: 2021
+        condition:
+          type: string
+          example: "Good"
+
+    User:
+      type: object
+      required:
+        - name
+        - password
+        - email
+        - address
+      properties:
+        id:
+          type: integer
+          example: 123
+        name:
+          type: string
+          example: "Deven Coreas"
+        password:
+          type: string
+          example: "password"
+        email:
+          type: string
+          example: "devencoreas@gmail.com"
+        address:
+          type: string
+          example: "350 S 600 E"
