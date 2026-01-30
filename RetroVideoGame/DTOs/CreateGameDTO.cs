@@ -7,5 +7,5 @@ public class CreateGameDTO
     public string Publisher { get; set; }
     public DateOnly ReleaseDate { get; set; }
     public string Console { get; set; }
-    public Enum Condition { get; set; }
+    public Conditions Condition { get; set; }
 }

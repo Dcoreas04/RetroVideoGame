@@ -1,48 +1,48 @@
-
 using Microsoft.AspNetCore.Mvc;
 
+[ApiController]
+[Route("users")]
 public class UsersController : ControllerBase
 {
-    private readonly UserService _userService;
-    private readonly List<User> _users;
-    public UsersController()
-    {
-        
-    }
+    private readonly IUserService _userService;
 
-    public UsersController(UserService userService)
+    public UsersController(IUserService userService)
     {
         _userService = userService;
     }
 
-    [HttpGet("{id}")]
-    public User? getUserById(int id)
+    [HttpGet("{id:int}")]
+    public ActionResult<User> GetUserById(int id)
     {
-        return _userService.GetUserById(id);
+        var user = _userService.GetUserById(id);
+        return user is null ? NotFound() : Ok(user);
     }
 
     [HttpPost]
-    public User createUser(CreateUserDTO user)
+    public ActionResult<User> CreateUser([FromBody] CreateUserDTO user)
     {
-        return _userService.createUser(user);
+        var created = _userService.createUser(user);
+        return Created($"/users/{created.Id}", created);
     }
 
-    [HttpDelete("{id}")]
-    public void deleteUser(int id)
+    [HttpDelete("{id:int}")]
+    public IActionResult DeleteUser(int id)
     {
         _userService.deleteUser(id);
+        return NoContent();
     }
 
-    [HttpPut("{id}")]
-    public User? updateUser(int id, UpdateUserDTO user)
+    [HttpPut("{id:int}")]
+    public ActionResult<User> UpdateUser(int id, [FromBody] UpdateUserDTO user)
     {
-        return _userService.updateUser(id, user);
+        var updated = _userService.updateUser(id, user);
+        return updated is null ? NotFound() : Ok(updated);
     }
 
-    [HttpPatch("{id}")]
-    public User? updatePartialUser(int id, UpdateUserDTO user)
+    [HttpPatch("{id:int}")]
+    public ActionResult<User> UpdatePartialUser(int id, [FromBody] UpdateUserDTO user)
     {
-        return _userService.updatePartialUser(id, user);
+        var updated = _userService.updatePartialUser(id, user);
+        return updated is null ? NotFound() : Ok(updated);
     }
-    
 }

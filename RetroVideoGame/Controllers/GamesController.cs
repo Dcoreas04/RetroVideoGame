@@ -1,47 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
 
+[ApiController]
+[Route("games")]
 public class GamesController : ControllerBase
 {
     private readonly IGameService _gameService;
-    private readonly List<Game> _games;
 
-    public GamesController()
-    {
-        
-    }
-
-    public GamesController(GameService gameService)
+    public GamesController(IGameService gameService)
     {
         _gameService = gameService;
     }
 
-    [HttpGet("{id}")]
-    public Game? getGameById(int id)
+    [HttpGet("{id:int}")]
+    public ActionResult<Game> GetGameById(int id)
     {
-        return _gameService.getGameById(id);
-    }
-    
-    [HttpPost]
-    public Game createGame(CreateGameDTO game)
-    {
-        return _gameService.createGame(game);
+        var game = _gameService.getGameById(id);
+        return game is null ? NotFound() : Ok(game);
     }
 
-    [HttpDelete("{id}")]
-    public void deleteGame(int id)
+    [HttpPost]
+    public ActionResult<Game> CreateGame([FromBody] CreateGameDTO game)
+    {
+        var created = _gameService.createGame(game);
+        return Created($"/games/{created.Id}", created);
+    }
+
+    [HttpDelete("{id:int}")]
+    public IActionResult DeleteGame(int id)
     {
         _gameService.deleteGame(id);
+        return NotFound();
     }
 
-    [HttpPut("{id}")]
-    public Game? updateGame(int id, UpdateGameDTO game)
+    [HttpPut("{id:int}")]
+    public ActionResult<Game> UpdateGame(int id, [FromBody] UpdateGameDTO game)
     {
-        return _gameService.updateGame(id, game);
+        var updated = _gameService.updateGame(id, game);
+        return updated is null ? NotFound() : Ok(updated);
     }
 
-    [HttpPatch("{id}")]
-    public Game? updatePartialGame(int id, UpdateGameDTO game)
+    [HttpPatch("{id:int}")]
+    public ActionResult<Game> UpdatePartialGame(int id, [FromBody] UpdateGameDTO game)
     {
-        return _gameService.updatePartialGame(id, game);
+        var updated = _gameService.updatePartialGame(id, game);
+        return updated is null ? NotFound() : Ok(updated);
     }
 }
