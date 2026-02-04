@@ -9,4 +9,6 @@ public class Game
     public string Platform { get; set; }
 
     public Conditions Condition { get; set; }
+
+    public int UserId { get; set; }
 }

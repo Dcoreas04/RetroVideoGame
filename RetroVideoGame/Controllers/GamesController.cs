@@ -29,7 +29,7 @@ public class GamesController : ControllerBase
     public IActionResult DeleteGame(int id)
     {
         _gameService.deleteGame(id);
-        return NotFound();
+        return NoContent();
     }
 
     [HttpPut("{id:int}")]

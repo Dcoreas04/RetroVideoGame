@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IGameService, GameService>();
 builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<ITradeOfferService, TradeOfferService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

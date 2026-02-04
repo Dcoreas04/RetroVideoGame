@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RetroVideoGame")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e73b0cea43efc01e03595426d858e811ed7e3ef")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be9836effe57e85bd02f33b390c63697e0e65a0e")]
 [assembly: System.Reflection.AssemblyProductAttribute("RetroVideoGame")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RetroVideoGame")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -27,3 +27,10 @@ C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\obj\Debug\net9.0\refint
 C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\obj\Debug\net9.0\RetroVideoGame.pdb
 C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\obj\Debug\net9.0\RetroVideoGame.genruntimeconfig.cache
 C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\obj\Debug\net9.0\ref\RetroVideoGame.dll
+C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\bin\Debug\net9.0\Microsoft.OpenApi.dll
+C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\obj\Debug\net9.0\RetroVideoGame.csproj.AssemblyReference.cache
+C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\obj\Debug\net9.0\RetroVideoGame.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\dcoreas\Downloads\RetroVideoGame\RetroVideoGame\obj\Debug\net9.0\RetroVid.931DF27D.Up2Date
