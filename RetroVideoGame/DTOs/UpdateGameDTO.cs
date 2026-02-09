@@ -1,7 +1,7 @@
 
 public class UpdateGameDTO
 {
-    public Enum? Condition { get; set; }
 
-    public string? Platform { get; set; }
+    public string? Title { get; set; }
+    public Enum? Condition { get; set; }
 }

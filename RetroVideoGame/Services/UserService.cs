@@ -3,10 +3,12 @@ public class UserService : IUserService
 {
 
     private readonly List<User> _users = new List<User>();
-    public User createUser(CreateUserDTO userDTO)
+    private static int _nextUserId = 1;
+    public User CreateUser(CreateUserDTO userDTO)
     {
         var users = new User
         {
+            Id = _nextUserId++,
             Name = userDTO.Name,
             Email = userDTO.Email,
             Password = userDTO.Password,
@@ -21,7 +23,7 @@ public class UserService : IUserService
         return _users.FirstOrDefault(u => u.Id == id);
     }
 
-    public bool deleteUser(int id)
+    public bool DeleteUser(int id)
     {
         var user = GetUserById(id);
         if (user == null)
@@ -33,7 +35,7 @@ public class UserService : IUserService
         return true;
     }
 
-    public User? updatePartialUser(int id, UpdateUserDTO user)
+    public User? UpdatePartialUser(int id, UpdateUserDTO user)
     {
         var userToUpdate = GetUserById(id);
         if (userToUpdate == null)
@@ -54,7 +56,7 @@ public class UserService : IUserService
         return userToUpdate;
     }
 
-    public User? updateUser(int id, UpdateUserDTO user)
+    public User? UpdateUser(int id, UpdateUserDTO user)
     {
         var userToUpdate = GetUserById(id);
         if (userToUpdate == null)
@@ -64,6 +66,7 @@ public class UserService : IUserService
 
         userToUpdate.Name = user.Name;
         userToUpdate.Address = user.Address;
+        userToUpdate.Password = user.Password;
 
         return userToUpdate;
     }

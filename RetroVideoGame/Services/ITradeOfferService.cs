@@ -2,7 +2,7 @@ public interface ITradeOfferService
 {
 
     // AI was used for this
-    TradeOffer CreateTradeOffer(int RequestingUserId, CreateTradeOfferDTO dto);
+    TradeOffer? CreateTradeOffer(int RequestingUserId, CreateTradeOfferDTO dto);
 
     List<TradeOffer> GetIncomingOffers(int RequestingUserId);
     List<TradeOffer> GetOutgoingOffers(int RequestingUserId);

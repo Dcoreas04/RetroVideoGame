@@ -1,30 +1,55 @@
 public class GameService : IGameService
     {
-    private readonly List<Game> _games = new List<Game>();
-    public Game createGame(CreateGameDTO gameDTO)
+    private static readonly List<Game> _games = new List<Game>();
+    private readonly IUserService _userService;
+
+private static int _nextGameId = 1;
+
+public GameService(IUserService userService)
     {
-
-        var games = new Game
-        {
-            Id = gameDTO.Id,
-            Title = gameDTO.Title,
-            Publisher = gameDTO.Publisher,
-            ReleaseDate = gameDTO.ReleaseDate,
-            Platform = gameDTO.Console,
-            Condition = (Conditions)gameDTO.Condition
-        };
-
-        _games.Add(games);
-        return games;
+        _userService = userService;
     }
 
-    public Game? getGameById(int id)
+public Game? CreateGame(CreateGameDTO gameDTO)
+{
+    if (gameDTO.UserId == null)
+    {
+        return null;
+    }
+
+    var userId = gameDTO.UserId.Value;
+
+    var user = _userService.GetUserById(userId);
+    if (user == null)
+    {
+        return null;
+    }
+
+    var game = new Game
+    {
+        Id = _nextGameId++,
+        Title = gameDTO.Title,
+        Publisher = gameDTO.Publisher,
+        ReleaseDate = gameDTO.ReleaseDate,
+        Platform = gameDTO.Platform,
+        Condition = gameDTO.Condition,
+        UserId = userId
+    };
+
+    _games.Add(game);
+    return game;
+}
+
+        
+
+    public Game? GetGameById(int id)
     {
         return _games.FirstOrDefault(g => g.Id == id);
     }
-    public void deleteGame(int id)
+
+    public void DeleteGame(int id)
     {
-        var game = getGameById(id);
+        var game = GetGameById(id);
         if (game == null)
         {
             return;
@@ -33,9 +58,9 @@ public class GameService : IGameService
         _games.Remove(game);
     }
 
-    public Game? updateGame(int id, UpdateGameDTO game)
+    public Game? UpdateGame(int id, UpdateGameDTO game)
     {
-        var gameToUpdate = getGameById(id);
+        var gameToUpdate = GetGameById(id);
         if (gameToUpdate == null)
         {
             return null;
@@ -46,8 +71,29 @@ public class GameService : IGameService
         return gameToUpdate;
     }
 
-    public Game? updatePartialGame(int id, UpdateGameDTO game)
+    public Game? UpdatePartialGame(int id, UpdateGameDTO game)
     {
-        throw new NotImplementedException();
+        var gameToUpdate = GetGameById(id);
+        if (gameToUpdate == null)
+        {
+            return null;
+        }
+
+        if (game.Condition != null)
+        {
+            gameToUpdate.Condition = (Conditions)game.Condition;
+        }
+
+        if(game.Title != null)
+        {
+            gameToUpdate.Title = game.Title;
+        }
+
+        return gameToUpdate;
+    }
+
+    public List<Game> BrowseGames(int userId)
+    {
+        return _games.Where(g => g.UserId != userId).ToList();
     }
 }

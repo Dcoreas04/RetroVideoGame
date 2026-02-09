@@ -21,28 +21,28 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult<User> CreateUser([FromBody] CreateUserDTO user)
     {
-        var created = _userService.createUser(user);
+        var created = _userService.CreateUser(user);
         return Created($"/users/{created.Id}", created);
     }
 
     [HttpDelete("{id:int}")]
     public IActionResult DeleteUser(int id)
     {
-        _userService.deleteUser(id);
+        _userService.DeleteUser(id);
         return NoContent();
     }
 
     [HttpPut("{id:int}")]
     public ActionResult<User> UpdateUser(int id, [FromBody] UpdateUserDTO user)
     {
-        var updated = _userService.updateUser(id, user);
+        var updated = _userService.UpdateUser(id, user);
         return updated is null ? NotFound() : Ok(updated);
     }
 
     [HttpPatch("{id:int}")]
     public ActionResult<User> UpdatePartialUser(int id, [FromBody] UpdateUserDTO user)
     {
-        var updated = _userService.updatePartialUser(id, user);
+        var updated = _userService.UpdatePartialUser(id, user);
         return updated is null ? NotFound() : Ok(updated);
     }
 }

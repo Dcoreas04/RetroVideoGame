@@ -1,8 +1,9 @@
 public interface IGameService
 {
-    Game createGame(CreateGameDTO game);
-    Game? getGameById(int id);
-    Game? updateGame(int id, UpdateGameDTO game);
-    Game? updatePartialGame(int id, UpdateGameDTO game);
-    void deleteGame(int id);
+    Game CreateGame(CreateGameDTO game);
+    Game? GetGameById(int id);
+    Game? UpdateGame(int id, UpdateGameDTO game);
+    Game? UpdatePartialGame(int id, UpdateGameDTO game);
+    void DeleteGame(int id);
+    List<Game> BrowseGames(int userId);
 }

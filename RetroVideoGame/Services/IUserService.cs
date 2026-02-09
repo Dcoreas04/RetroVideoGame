@@ -1,10 +1,10 @@
 
 public interface IUserService
 {
-    User createUser(CreateUserDTO user);
+    User CreateUser(CreateUserDTO user);
 
     User? GetUserById(int id);
-    User? updateUser(int id, UpdateUserDTO user);
-    User? updatePartialUser(int id, UpdateUserDTO user);
-    bool deleteUser(int id);
+    User? UpdateUser(int id, UpdateUserDTO user);
+    User? UpdatePartialUser(int id, UpdateUserDTO user);
+    bool DeleteUser(int id);
 }

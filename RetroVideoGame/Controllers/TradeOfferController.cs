@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -6,44 +5,73 @@ using Microsoft.AspNetCore.Mvc;
 public class TradeOfferController : ControllerBase
 {
     private readonly ITradeOfferService _tradeOfferService;
+    private readonly IUserService _userService;
 
-    public TradeOfferController(ITradeOfferService tradeOfferService)
+    public TradeOfferController(ITradeOfferService tradeOfferService, IUserService userService)
     {
-        _tradeOfferService = tradeOfferService;
+            _tradeOfferService = tradeOfferService;
+            _userService = userService;
     }
 
     [HttpPost]
-    public ActionResult<TradeOffer> CreateTradeOffer(int RequestingUserId, [FromBody] CreateTradeOfferDTO dto)
+    public ActionResult<TradeOffer> CreateTradeOffer(
+
+        // AI was used for these two lines of code below and any FromHeader
+        [FromHeader(Name = "X-User-Id")] int? userId,
+        [FromBody] CreateTradeOfferDTO dto)
     {
-        var created = _tradeOfferService.CreateTradeOffer(RequestingUserId, dto);
-        return created is null ? NotFound() : Ok(created);
+        if (userId == null)
+            return Unauthorized("Missing X-User-Id header.");
+
+        if (_userService.GetUserById(userId.Value) == null)
+            return Unauthorized("Invalid user.");
+
+        var created = _tradeOfferService.CreateTradeOffer(userId.Value, dto);
+        return created == null ? BadRequest() : Ok(created);
     }
 
-    [HttpGet("incoming/{RequestingUserId:int}")]
-    public ActionResult<List<TradeOffer>> GetIncomingOffers(int RequestingUserId)
+    [HttpGet("incoming")]
+    public ActionResult<List<TradeOffer>> GetIncomingOffers(
+        [FromHeader(Name = "X-User-Id")] int? userId)
     {
-        var offers = _tradeOfferService.GetIncomingOffers(RequestingUserId);
-        return offers is null ? NotFound() : Ok(offers);
+        if (userId == null)
+            return Unauthorized();
+
+        return Ok(_tradeOfferService.GetIncomingOffers(userId.Value));
     }
 
-    [HttpGet("outgoing/{RequestingUserId:int}")]
-    public ActionResult<List<TradeOffer>> GetOutgoingOffers(int RequestingUserId)
+    [HttpGet("outgoing")]
+    public ActionResult<List<TradeOffer>> GetOutgoingOffers(
+        [FromHeader(Name = "X-User-Id")] int? userId)
     {
-        var offers = _tradeOfferService.GetOutgoingOffers(RequestingUserId);
-        return offers is null ? NotFound() : Ok(offers);
+        if (userId == null)
+            return Unauthorized();
+
+        return Ok(_tradeOfferService.GetOutgoingOffers(userId.Value));
     }
 
-    [HttpGet("{RequestingUserId:int}/{offerId:int}")]
-    public ActionResult<TradeOffer> GetTradeOfferById(int RequestingUserId, int offerId)
+    [HttpGet("{offerId:int}")]
+    public ActionResult<TradeOffer> GetTradeOfferById(
+        int offerId,
+        [FromHeader(Name = "X-User-Id")] int? userId)
     {
-        var offer = _tradeOfferService.GetTradeOfferById(RequestingUserId, offerId);
-        return offer is null ? NotFound() : Ok(offer);
+        if (userId == null)
+            return Unauthorized();
+
+        var offer = _tradeOfferService.GetTradeOfferById(userId.Value, offerId);
+        return offer == null ? NotFound() : Ok(offer);
     }
 
-    [HttpPatch("{RequestingUserId:int}/{offerId:int}")]
-    public ActionResult<TradeOffer> ManageTradeOffer(int RequestingUserId, int offerId, [FromBody] ManageTradeOfferDTO dto)
+    [HttpPatch("{offerId:int}")]
+    public ActionResult<TradeOffer> ManageTradeOffer(
+        int offerId,
+        [FromHeader(Name = "X-User-Id")] int? userId,
+        [FromBody] ManageTradeOfferDTO dto)
     {
-        var offer = _tradeOfferService.ManageTradeOffer(RequestingUserId, offerId, dto);
-        return offer is null ? NotFound() : Ok(offer);
+        if (userId == null)
+            return Unauthorized();
+
+        var updated = _tradeOfferService.ManageTradeOffer(userId.Value, offerId, dto);
+        return updated == null ? BadRequest() : Ok(updated);
     }
 }
