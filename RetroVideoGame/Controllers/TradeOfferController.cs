@@ -15,8 +15,6 @@ public class TradeOfferController : ControllerBase
 
     [HttpPost]
     public ActionResult<TradeOffer> CreateTradeOffer(
-
-        // AI was used for these two lines of code below and any FromHeader
         [FromHeader(Name = "X-User-Id")] int? userId,
         [FromBody] CreateTradeOfferDTO dto)
     {

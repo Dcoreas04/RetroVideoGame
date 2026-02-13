@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Confluent.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,11 +9,24 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IGameService, GameService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ITradeOfferService, TradeOfferService>();
+
+// AI was used for this
+builder.Services.AddSingleton<IProducer<Null, string>>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var bootstrap = config["KAFKA_BOOTSTRAP_SERVERS"] ?? "kafka:9092";
+
+    var producerConfig = new ProducerConfig
+    {
+        BootstrapServers = bootstrap
+    };
+
+    return new ProducerBuilder<Null, string>(producerConfig).Build();
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -28,3 +42,4 @@ app.MapGet("/instance", () =>
 });
 
 app.Run();
+
