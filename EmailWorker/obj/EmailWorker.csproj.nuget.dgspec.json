@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\RetroVideoGame\\RetroVideoGame.csproj": {}
+    "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\EmailWorker\\EmailWorker.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\RetroVideoGame\\RetroVideoGame.csproj": {
+    "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\EmailWorker\\EmailWorker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\RetroVideoGame\\RetroVideoGame.csproj",
-        "projectName": "RetroVideoGame",
-        "projectPath": "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\RetroVideoGame\\RetroVideoGame.csproj",
+        "projectUniqueName": "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\EmailWorker\\EmailWorker.csproj",
+        "projectName": "EmailWorker",
+        "projectPath": "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\EmailWorker\\EmailWorker.csproj",
         "packagesPath": "C:\\Users\\dcoreas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\RetroVideoGame\\obj\\",
+        "outputPath": "C:\\Users\\dcoreas\\Downloads\\RetroVideoGame\\EmailWorker\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -53,19 +53,19 @@
           "dependencies": {
             "Confluent.Kafka": {
               "target": "Package",
-              "version": "[2.13.0, )"
+              "version": "[2.6.0, )"
             },
             "MailKit": {
               "target": "Package",
-              "version": "[4.14.1, )"
+              "version": "[4.10.0, )"
             },
             "MimeKit": {
               "target": "Package",
-              "version": "[4.14.0, )"
+              "version": "[4.10.0, )"
             },
-            "Swashbuckle.AspNetCore": {
+            "prometheus-net": {
               "target": "Package",
-              "version": "[10.1.0, )"
+              "version": "[8.2.1, )"
             },
             "prometheus-net.AspNetCore": {
               "target": "Package",
@@ -84,9 +84,6 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Confluent.Kafka;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseHttpMetrics();
+app.MapMetrics("/metrics");
 app.MapControllers();
 
 app.MapGet("/instance", () =>

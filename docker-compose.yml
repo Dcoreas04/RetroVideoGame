@@ -43,6 +43,16 @@ services:
     networks:
       - distributed-systems
 
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    command:
+      - --nginx.scrape-uri=http://nginx:80/stub_status
+    networks:
+      - distributed-systems
+    depends_on:
+      - nginx
+
   # kafka and emailworker Was modified with AI
   kafka:
     image: confluentinc/cp-kafka:7.6.0
@@ -95,6 +105,16 @@ services:
     depends_on:
       - kafka
 
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    command:
+      - "--kafka.server=kafka:9092"
+    networks:
+      - distributed-systems
+    depends_on:
+      kafka:
+        condition: service_healthy
+
   mailhog:
     image: mailhog/mailhog:latest
     ports:
@@ -118,11 +138,59 @@ services:
       SMTP_FROM: noreply@retrogame.local
       SMTP_HOST: mailhog
       SMTP_PORT: "1025"
+      ASPNETCORE_URLS: http://+:9100
+    expose:
+      - "9100"
     networks:
       - distributed-systems
 
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+    - ./RetroVideoGame/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - distributed-systems
+    depends_on:
+      - api
+      - api2
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - distributed-systems
+    depends_on:
+      - prometheus
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: retrogame
+      POSTGRES_USER: retrogame
+      POSTGRES_PASSWORD: retrogamepass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - distributed-systems
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_NAME: "postgresql://retrogame:retrogamepass@db:5432/retrogame?sslmode=disable"
+    networks:
+      - distributed-systems
+    depends_on:
+      - db
+
+
 volumes:
   kafka_data:
+  postgres_data:
 
 networks:
   distributed-systems:

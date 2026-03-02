@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,6 +11,8 @@
     <PackageReference Include="Confluent.Kafka" Version="2.6.0" />
     <PackageReference Include="MailKit" Version="4.10.0" />
     <PackageReference Include="MimeKit" Version="4.10.0" />
+    <PackageReference Include="prometheus-net" Version="8.2.1" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
   </ItemGroup>
 
 </Project>

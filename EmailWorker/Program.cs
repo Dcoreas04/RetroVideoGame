@@ -2,6 +2,7 @@ using System.Text.Json;
 using Confluent.Kafka;
 using MailKit.Net.Smtp;
 using MimeKit;
+using Prometheus;
 using EmailWorker.Models;
 
 string bootstrap = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVERS") ?? "kafka:9092";
@@ -15,49 +16,71 @@ Console.WriteLine($"[EmailWorker] Starting...");
 Console.WriteLine($"[EmailWorker] Kafka: {bootstrap} topic={topic}");
 Console.WriteLine($"[EmailWorker] SMTP: {smtpHost}:{smtpPort} from={from}");
 
-var config = new ConsumerConfig
-{
-    BootstrapServers = bootstrap,
-    GroupId = "emailworker-group",
-    AutoOffsetReset = AutoOffsetReset.Earliest,
-    EnableAutoCommit = true
-};
+var emailsReceived = Metrics.CreateCounter("emailworker_emails_received_total", "Total email messages received from Kafka");
+var emailsSent = Metrics.CreateCounter("emailworker_emails_sent_total", "Total emails sent successfully");
+var emailsInvalid = Metrics.CreateCounter("emailworker_emails_invalid_total", "Total invalid email messages");
+var emailsFailed = Metrics.CreateCounter("emailworker_emails_failed_total", "Total email send failures");
 
-using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
-consumer.Subscribe(topic);
+var builder = WebApplication.CreateBuilder(args);
 
-while (true)
+builder.Services.AddHealthChecks();
+
+var app = builder.Build();
+app.MapMetrics("/metrics");
+
+_ = Task.Run(() =>
 {
-    try
+    var config = new ConsumerConfig
     {
-        var cr = consumer.Consume();
-        Console.WriteLine($"[EmailWorker] Received: {cr.Message.Value}");
+        BootstrapServers = bootstrap,
+        GroupId = "emailworker-group",
+        AutoOffsetReset = AutoOffsetReset.Earliest,
+        EnableAutoCommit = true
+    };
 
-        var msg = JsonSerializer.Deserialize<EmailWorker.Models.EmailMessage>(cr.Message.Value,
-    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
+    consumer.Subscribe(topic);
 
-
-        if (msg == null || string.IsNullOrWhiteSpace(msg.To))
+    while (true)
+    {
+        try
         {
-            Console.WriteLine("[EmailWorker] Invalid payload (missing 'to'). Skipping.");
-            continue;
+            var cr = consumer.Consume();
+            emailsReceived.Inc();
+
+            Console.WriteLine($"[EmailWorker] Received: {cr.Message.Value}");
+
+            var msg = JsonSerializer.Deserialize<EmailMessage>(
+                cr.Message.Value,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (msg == null || string.IsNullOrWhiteSpace(msg.To))
+            {
+                emailsInvalid.Inc();
+                Console.WriteLine("[EmailWorker] Invalid payload (missing 'to'). Skipping.");
+                continue;
+            }
+
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(from));
+            email.To.Add(MailboxAddress.Parse(msg.To));
+            email.Subject = msg.Subject ?? "(no subject)";
+            email.Body = new TextPart("plain") { Text = msg.Body ?? "" };
+
+            using var smtp = new SmtpClient();
+            smtp.Connect(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.None);
+            smtp.Send(email);
+            smtp.Disconnect(true);
+
+            emailsSent.Inc();
+            Console.WriteLine($"[EmailWorker] Sent email to {msg.To} (captured by MailHog).");
         }
-
-        var email = new MimeMessage();
-        email.From.Add(MailboxAddress.Parse(from));
-        email.To.Add(MailboxAddress.Parse(msg.To));
-        email.Subject = msg.Subject ?? "(no subject)";
-        email.Body = new TextPart("plain") { Text = msg.Body ?? "" };
-
-        using var smtp = new SmtpClient();
-        smtp.Connect(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.None);
-        smtp.Send(email);
-        smtp.Disconnect(true);
-
-        Console.WriteLine($"[EmailWorker] Sent email to {msg.To} (captured by MailHog).");
+        catch (Exception ex)
+        {
+            emailsFailed.Inc();
+            Console.WriteLine($"[EmailWorker] ERROR: {ex.Message}");
+        }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[EmailWorker] ERROR: {ex.Message}");
-    }
-}
+});
+
+app.Run("http://0.0.0.0:9100");
